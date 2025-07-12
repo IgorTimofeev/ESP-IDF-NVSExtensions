@@ -1,6 +1,6 @@
 #pragma once
 
-#include "YOBANVSStream.h"
+#include "stream.h"
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
@@ -12,9 +12,9 @@
 #include "nvs_flash.h"
 
 namespace YOBA {
-	class YOBANVSSettings {
+	class NVSSettings {
 		public:
-			virtual ~YOBANVSSettings() = default;
+			virtual ~NVSSettings() = default;
 
 			static void setup() {
 				const auto status = nvs_flash_init();
@@ -31,7 +31,7 @@ namespace YOBA {
 			}
 
 			void read() {
-				YOBANVSStream stream {};
+				NVSStream stream {};
 				stream.openForReading(getNVSNamespace());
 
 				onRead(stream);
@@ -42,7 +42,7 @@ namespace YOBA {
 			void write() {
 				ESP_LOGI("NVSSettings", "Writing %s", getNVSNamespace());
 
-				YOBANVSStream stream {};
+				NVSStream stream {};
 				stream.openForWriting(getNVSNamespace());
 
 				onWrite(stream);
@@ -61,7 +61,7 @@ namespace YOBA {
 
 				xTaskCreate(
 					[](void* arg) {
-						const auto instance = static_cast<YOBANVSSettings*>(arg);
+						const auto instance = static_cast<NVSSettings*>(arg);
 
 						while (true) {
 							const auto time = esp_timer_get_time();
@@ -87,8 +87,8 @@ namespace YOBA {
 
 		protected:
 			virtual const char* getNVSNamespace() = 0;
-			virtual void onRead(const YOBANVSStream& stream) = 0;
-			virtual void onWrite(const YOBANVSStream& stream) = 0;
+			virtual void onRead(const NVSStream& stream) = 0;
+			virtual void onWrite(const NVSStream& stream) = 0;
 
 		private:
 			constexpr static uint32_t _writeDelayTicks = pdMS_TO_TICKS(2500);
