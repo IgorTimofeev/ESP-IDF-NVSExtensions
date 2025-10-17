@@ -16,7 +16,7 @@ namespace YOBA {
 		public:
 			virtual ~NVSSettings() = default;
 
-			static void setup() {
+			void setup() {
 				const auto status = nvs_flash_init();
 
 				if (status == ESP_ERR_NVS_NO_FREE_PAGES || status == ESP_ERR_NVS_NEW_VERSION_FOUND) {
