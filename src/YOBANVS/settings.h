@@ -16,7 +16,7 @@ namespace YOBA {
 		public:
 			virtual ~NVSSettings() = default;
 
-			void setup() {
+			static void setup() {
 				const auto status = nvs_flash_init();
 
 				if (status == ESP_ERR_NVS_NO_FREE_PAGES || status == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -32,7 +32,7 @@ namespace YOBA {
 
 			void read() {
 				NVSStream stream {};
-				stream.openForReading(getNVSNamespace());
+				stream.openForReading(getNamespace());
 
 				onRead(stream);
 
@@ -40,10 +40,10 @@ namespace YOBA {
 			}
 
 			void write() {
-				ESP_LOGI("NVSSettings", "Writing %s", getNVSNamespace());
+				ESP_LOGI("NVSSettings", "Writing %s", getNamespace());
 
 				NVSStream stream {};
-				stream.openForWriting(getNVSNamespace());
+				stream.openForWriting(getNamespace());
 
 				onWrite(stream);
 
@@ -86,7 +86,7 @@ namespace YOBA {
 			}
 
 		protected:
-			virtual const char* getNVSNamespace() = 0;
+			virtual const char* getNamespace() = 0;
 			virtual void onRead(const NVSStream& stream) = 0;
 			virtual void onWrite(const NVSStream& stream) = 0;
 

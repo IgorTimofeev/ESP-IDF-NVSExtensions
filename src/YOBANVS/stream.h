@@ -2,6 +2,7 @@
 
 #include <esp_log.h>
 #include <cstring>
+#include <string>
 #include "nvs.h"
 
 namespace YOBA {
@@ -40,7 +41,7 @@ namespace YOBA {
 				setValue<uint16_t, nvs_set_u16>(key, value);
 			}
 
-			uint16_t getInt16(const char* key, const int16_t defaultValue = 0) const {
+			int16_t getInt16(const char* key, const int16_t defaultValue = 0) const {
 				return getValue<int16_t, int16_t, nvs_get_i16>(key, defaultValue);
 			}
 
@@ -169,15 +170,13 @@ namespace YOBA {
 				if (nvs_get_blob(_handle, key, nullptr, &bufferSize) != ESP_OK)
 					return defaultValue;
 
-				uint8_t buffer[bufferSize] {};
+				auto str = std::string();
+				str.resize(bufferSize);
 
-				if (nvs_get_blob(_handle, key, &buffer[0], &bufferSize) != ESP_OK)
+				if (nvs_get_blob(_handle, key, str.data(), &bufferSize) != ESP_OK)
 					return defaultValue;
 
-				return std::string(
-					reinterpret_cast<TChar*>(buffer),
-					(bufferSize / sizeof(TChar)) - 1
-				);
+				return str;
 			}
 
 			template<typename TChar>
