@@ -95,6 +95,13 @@ namespace YOBA {
 				setStringT<char>(key, value);
 			}
 
+			size_t getBlobLength(const char* key) const {
+				size_t result = 0;
+				nvs_get_blob(_handle, key, nullptr, &result);
+
+				return result;
+			}
+
 			void getBlob(const char* key, uint8_t* data, const size_t length) const {
 				size_t lengthCopy = length;
 				ESP_ERROR_CHECK(nvs_get_blob(_handle, key, data, &lengthCopy));
@@ -106,6 +113,11 @@ namespace YOBA {
 
 			void erase(const char* key) const {
 				ESP_ERROR_CHECK(nvs_erase_key(_handle, key));
+			}
+
+			template<typename T>
+			size_t getObjectLength(const char* key) const {
+				return getBlobLength(key) / sizeof(T);
 			}
 
 			template<typename T>
