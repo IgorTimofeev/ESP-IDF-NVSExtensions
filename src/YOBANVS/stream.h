@@ -104,6 +104,10 @@ namespace YOBA {
 				ESP_ERROR_CHECK(nvs_set_blob(_handle, key, data, length));
 			}
 
+			void erase(const char* key) const {
+				ESP_ERROR_CHECK(nvs_erase_key(_handle, key));
+			}
+
 			template<typename T>
 			void getObject(const char* key, T* data, const size_t length) const {
 				getBlob(
