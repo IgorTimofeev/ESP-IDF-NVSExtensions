@@ -9,26 +9,10 @@
 #include <esp_log.h>
 #include <memory>
 
-#include "nvs_flash.h"
-
 namespace YOBA {
 	class NVSSettings {
 		public:
 			virtual ~NVSSettings() = default;
-
-			static void setup() {
-				const auto status = nvs_flash_init();
-
-				if (status == ESP_ERR_NVS_NO_FREE_PAGES || status == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-					// NVS partition was truncated and needs to be erased
-					ESP_ERROR_CHECK(nvs_flash_erase());
-					// Retry init
-					ESP_ERROR_CHECK(nvs_flash_init());
-				}
-				else {
-					ESP_ERROR_CHECK(status);
-				}
-			}
 
 			void read() {
 				NVSStream stream {};
