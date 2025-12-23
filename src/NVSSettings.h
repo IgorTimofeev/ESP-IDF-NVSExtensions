@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stream.h"
+#include "NVSStream.h"
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
