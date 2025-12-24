@@ -150,7 +150,7 @@ namespace YOBA {
 				writeUint16("uint16Test", 12345);
 				writeUint32("uint32Test", 12345);
 				writeFloat("floatTest", 123.456);
-				writeString("stringTest", "Pizda penisa");
+//				writeString("stringTest", "Pizda penisa");
 				commit();
 				close();
 
