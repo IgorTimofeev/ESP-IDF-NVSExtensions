@@ -75,6 +75,6 @@ namespace YOBA {
 
 		private:
 			constexpr static uint32_t _writeDelayTicks = pdMS_TO_TICKS(2500);
-			uint32_t _scheduledWriteTimeUs = 0;
+			int64_t _scheduledWriteTimeUs = 0;
 	};
 }
