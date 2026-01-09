@@ -116,7 +116,8 @@ namespace YOBA {
 			}
 
 			void erase(const char* key) const {
-				ESP_ERROR_CHECK(nvs_erase_key(_handle, key));
+				const auto status = nvs_erase_key(_handle, key);
+				assert(status == ESP_OK || status == ESP_ERR_NVS_NOT_FOUND);
 			}
 
 			template<typename T>
