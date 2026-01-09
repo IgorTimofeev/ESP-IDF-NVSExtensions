@@ -32,11 +32,19 @@ namespace YOBA {
 			uint8_t readUint8(const char* key, const uint8_t defaultValue = 0) const {
 				return readValue<uint8_t, uint8_t, nvs_get_u8>(key, defaultValue);
 			}
+			
+			int8_t readInt8(const char* key, const int8_t defaultValue = 0) const {
+				return readValue<int8_t, int8_t, nvs_get_i8>(key, defaultValue);
+			}
 
 			void writeUint8(const char* key, const uint8_t value) const {
 				writeValue<uint8_t, nvs_set_u8>(key, value);
 			}
-
+			
+			void writeInt8(const char* key, const int8_t value) const {
+				writeValue<int8_t, nvs_set_i8>(key, value);
+			}
+			
 			uint16_t readUint16(const char* key, const uint16_t defaultValue = 0) const {
 				return readValue<uint16_t, uint16_t, nvs_get_u16>(key, defaultValue);
 			}
