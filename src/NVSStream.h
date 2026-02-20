@@ -78,17 +78,19 @@ namespace YOBA {
 			}
 
 			float readFloat(const char* key, const float defaultValue = 0) const {
-				const auto u32 = readUint32(key, defaultValue);
+				const auto length = readBlobLength(key);
 
-				float result;
-				std::memcpy(&result, &u32, sizeof(float));
+				if (length != sizeof(float))
+					return defaultValue;
+
+				float result = 0;
+				readBlob(key, reinterpret_cast<uint8_t*>(&result), length);
+
 				return result;
 			}
 
 			void writeFloat(const char* key, const float value) const {
-				uint32_t u32;
-				std::memcpy(&u32, &value, sizeof(float));
-				writeUint32(key, u32);
+				writeBlob(key, reinterpret_cast<const uint8_t*>(&value), sizeof(float));
 			}
 
 			bool readBool(const char* key, const bool defaultValue = false) const {
