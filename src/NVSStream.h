@@ -1,9 +1,12 @@
 #pragma once
 
-#include <esp_log.h>
 #include <cstring>
 #include <string>
+#include <type_traits>
+#include <concepts>
+
 #include <nvs_flash.h>
+#include <esp_log.h>
 
 namespace YOBA {
 	class NVSStream {
@@ -151,6 +154,30 @@ namespace YOBA {
 					reinterpret_cast<const uint8_t*>(data),
 					sizeof(T) * length
 				);
+			}
+
+			template<typename TEnum, typename = std::enable_if_t<std::is_enum_v<TEnum>>>
+			TEnum readEnum(const char* key, const TEnum defaultValue) const {
+				if constexpr (std::is_same_v<std::underlying_type_t<TEnum>, uint32_t>) {
+					return static_cast<TEnum>(readUint32(key, static_cast<uint32_t>(defaultValue)));
+				}
+				else if constexpr (std::is_same_v<std::underlying_type_t<TEnum>, uint32_t>) {
+					return static_cast<TEnum>(readUint16(key, static_cast<uint32_t>(defaultValue)));
+				}
+
+				return static_cast<TEnum>(readUint8(key, static_cast<uint8_t>(defaultValue)));
+			}
+
+			template<typename TEnum, typename = std::enable_if_t<std::is_enum_v<TEnum>>>
+			void writeEnum(const char* key, const TEnum value) const {
+				if constexpr (std::is_same_v<std::underlying_type_t<TEnum>, uint32_t>) {
+					writeUint32(key, static_cast<uint32_t>(value));
+				}
+				else if constexpr (std::is_same_v<std::underlying_type_t<TEnum>, uint32_t>) {
+					writeUint16(key, static_cast<uint32_t>(value));
+				}
+
+				writeUint8(key, static_cast<uint8_t>(value));
 			}
 
 			void testForBullshit() {
