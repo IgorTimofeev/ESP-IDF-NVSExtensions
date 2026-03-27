@@ -1,12 +1,12 @@
 #pragma once
 
-#include <cstring>
 #include <string>
 #include <type_traits>
-#include <concepts>
+#include <span>
 
 #include <nvs_flash.h>
 #include <esp_log.h>
+#include <sys/types.h>
 
 namespace YOBA {
 	class NVSStream {
@@ -81,19 +81,26 @@ namespace YOBA {
 			}
 
 			float readFloat(const char* key, const float defaultValue = 0) const {
-				const auto length = readBlobLength(key);
+				const auto size = readBlobSize(key);
 
-				if (length != sizeof(float))
+				if (size != sizeof(float))
 					return defaultValue;
 
 				float result = 0;
-				readBlob(key, reinterpret_cast<uint8_t*>(&result), length);
+
+				readBlob(
+					key,
+					std::span {
+						reinterpret_cast<uint8_t*>(&result),
+						size
+					}
+				);
 
 				return result;
 			}
 
 			void writeFloat(const char* key, const float value) const {
-				writeBlob(key, reinterpret_cast<const uint8_t*>(&value), sizeof(float));
+				writeBlob(key, std::span<const uint8_t>(reinterpret_cast<const uint8_t*>(&value), sizeof(float)));
 			}
 
 			bool readBool(const char* key, const bool defaultValue = false) const {
@@ -112,20 +119,20 @@ namespace YOBA {
 				writeStringT<char>(key, value);
 			}
 
-			size_t readBlobLength(const char* key) const {
+			size_t readBlobSize(const char* key) const {
 				size_t result = 0;
 				nvs_get_blob(_handle, key, nullptr, &result);
 
 				return result;
 			}
 
-			void readBlob(const char* key, uint8_t* data, const size_t length) const {
-				size_t lengthCopy = length;
-				ESP_ERROR_CHECK(nvs_get_blob(_handle, key, data, &lengthCopy));
+			void readBlob(const char* key, const std::span<uint8_t> data) const {
+				size_t sizeCopy = data.size_bytes();
+				ESP_ERROR_CHECK(nvs_get_blob(_handle, key, data.data(), &sizeCopy));
 			}
 
-			void writeBlob(const char* key, const uint8_t* data, const size_t length) const {
-				ESP_ERROR_CHECK(nvs_set_blob(_handle, key, data, length));
+			void writeBlob(const char* key, const std::span<const uint8_t> data) const {
+				ESP_ERROR_CHECK(nvs_set_blob(_handle, key, data.data(), data.size_bytes()));
 			}
 
 			void erase(const char* key) const {
@@ -134,25 +141,29 @@ namespace YOBA {
 			}
 
 			template<typename T>
-			size_t readObjectLength(const char* key) const {
-				return readBlobLength(key) / sizeof(T);
+			size_t readObjectSize(const char* key) const {
+				return readBlobSize(key) / sizeof(T);
 			}
 
 			template<typename T>
-			void readObject(const char* key, T* data, const size_t length) const {
+			void readObject(const char* key, const std::span<T> data) const {
 				readBlob(
 					key,
-					reinterpret_cast<uint8_t*>(data),
-					sizeof(T) * length
+					std::span {
+						reinterpret_cast<uint8_t*>(data.data()),
+						data.size_bytes()
+					}
 				);
 			}
 
 			template<typename T>
-			void writeObject(const char* key, const T* data, const size_t length) const {
+			void writeObject(const char* key, const std::span<const T> data) const {
 				writeBlob(
 					key,
-					reinterpret_cast<const uint8_t*>(data),
-					sizeof(T) * length
+					std::span {
+						reinterpret_cast<const uint8_t*>(data.data()),
+						data.size_bytes()
+					}
 				);
 			}
 
