@@ -34,7 +34,7 @@ namespace YOBA {
 				stream.close();
 			}
 
-			void scheduleWrite() {
+			void writeLater() {
 				const auto alreadyScheduled = _scheduledWriteTimeUs > 0;
 
 				_scheduledWriteTimeUs = esp_timer_get_time() + 2'500'000;
