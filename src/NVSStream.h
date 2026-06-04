@@ -199,7 +199,7 @@ namespace YOBA {
 				writeUint16("uint16Test", 12345);
 				writeUint32("uint32Test", 12345);
 				writeFloat("floatTest", 123.456);
-//				writeString("stringTest", "Pizda penisa");
+				writeString("stringTest", "Pizda penisa");
 				commit();
 				close();
 
@@ -260,7 +260,7 @@ namespace YOBA {
 				if (nvs_get_blob(_handle, key, nullptr, &bufferSize) != ESP_OK)
 					return defaultValue;
 
-				auto str = std::string();
+				std::string str {};
 				str.resize(bufferSize);
 
 				if (nvs_get_blob(_handle, key, str.data(), &bufferSize) != ESP_OK)
@@ -275,7 +275,7 @@ namespace YOBA {
 					_handle,
 					key,
 					reinterpret_cast<const uint8_t*>(value.data()),
-					(value.size() + 1) * sizeof(char)
+					(value.size() + 1) * sizeof(TChar)
 				));
 			}
 	};
