@@ -89,7 +89,7 @@ namespace YOBA {
 			}
 
 			int64_t readInt64(const char* key, const int64_t defaultValue = 0) const {
-				return readValue<int64_t, int64_t, nvs_get_i32>(key, defaultValue);
+				return readValue<int64_t, int64_t, nvs_get_i64>(key, defaultValue);
 			}
 
 			void writeInt64(const char* key, const int64_t value) const {
