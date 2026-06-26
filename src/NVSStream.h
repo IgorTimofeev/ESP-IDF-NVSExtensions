@@ -72,12 +72,28 @@ namespace YOBA {
 				writeValue<uint32_t, nvs_set_u32>(key, value);
 			}
 
+			int32_t readInt32(const char* key, const int32_t defaultValue = 0) const {
+				return readValue<int32_t, int32_t, nvs_get_i32>(key, defaultValue);
+			}
+
+			void writeInt32(const char* key, const int32_t value) const {
+				writeValue<int32_t, nvs_set_i32>(key, value);
+			}
+
 			uint64_t readUint64(const char* key, const uint64_t defaultValue = 0) const {
 				return readValue<uint64_t, uint64_t, nvs_get_u64>(key, defaultValue);
 			}
 
 			void writeUint64(const char* key, const uint64_t value) const {
 				writeValue<uint64_t, nvs_set_u64>(key, value);
+			}
+
+			int64_t readInt64(const char* key, const int64_t defaultValue = 0) const {
+				return readValue<int64_t, int64_t, nvs_get_i32>(key, defaultValue);
+			}
+
+			void writeInt64(const char* key, const int64_t value) const {
+				writeValue<int64_t, nvs_set_i64>(key, value);
 			}
 
 			float readFloat(const char* key, const float defaultValue = 0) const {
